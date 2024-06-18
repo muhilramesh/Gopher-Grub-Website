@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gopher Grub</title>
+    <style>
+        /* Existing CSS styles */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin: 0; /* Remove default margin */
+            background-color: #7a0019; /* University of Minnesota Maroon */
+            color: #ffd700; /* Gold text color */
+        }
+
+        header, section {
+            width: 80%; /* Adjust the width as needed */
+            box-sizing: border-box; /* Include padding and border in the width */
+            border: 2px solid #ccc; /* Add a border around the content */
+            padding: 20px; /* Add padding for better spacing */
+            margin-bottom: 20px; /* Add margin at the bottom for separation */
+            background-color: transparent; /* Set background color to transparent */
+            perspective: 500px; /* Set the perspective value */
+        }
+
+        h1 {
+            font-size: 36px; /* Increase the font size for "Gopher Grub" */
+        }
+
+        ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Ensure "Check Dining Hall Menu" is on one line */
+        nav a {
+            white-space: nowrap;
+        }
+
+        /* Increase font size for "Give Your Rating" and "Check Dining Hall Menu for Today" */
+        #give-rating h2, #check-menu h2 {
+            font-size: 24px;
+        }
+
+        /* Increase font size for dining halls */
+        #rating-for-today ul {
+            padding: 0; /* Reset padding */
+            margin: 0; /* Reset margin */
+            list-style-type: none; /* Remove bullet points */
+        }
+
+        /* Increase font size for dining hall links */
+        #rating-for-today ul li a {
+            font-size: 20px; /* Adjust the font size as needed */
+        }
+
+        /* Add space between dining halls */
+        #rating-for-today ul li {
+            margin-bottom: 10px; /* Adjust the margin as needed */
+        }
+
+        /* Set hyperlink color to gold */
+        a {
+            color: #ffd700;
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s ease-in-out; /* Add a smooth transition effect for color change */
+        }
+
+        /* Change color on hover */
+        a:hover {
+            color: #c4820f; /* Change to a different color on hover */
+        }
+
+        /* Remove margin between sections */
+        #give-rating, #check-menu {
+            margin-bottom: 0;
+        }
+
+        /* Add any additional styling as needed */
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>Gopher Grub</h1>
+    </header>
+
+    <!-- Give Your Rating Section -->
+    <section id="give-rating">
+        <h2>Give Your Rating</h2>
+        <form id="rating-form">
+            <label for="diningHall">Dining Hall:</label>
+            <select id="diningHall" name="diningHall">
+                <option value="17th Ave">17th Ave</option>
+                <option value="Pioneer">Pioneer</option>
+                <option value="Sanford">Sanford</option>
+                <option value="Middlebrook">Middlebrook</option>
+                <option value="Comstock">Comstock</option>
+            </select>
+            <br>
+            <label for="rating">Rating (1-5):</label>
+            <input type="number" id="rating" name="rating" min="1" max="5" required>
+            <br>
+            <label for="comment">Comment (optional):</label>
+            <textarea id="comment" name="comment"></textarea>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+
+    <!-- Check Dining Hall Menu Section -->
+    <section id="check-menu">
+        <a href="https://dineoncampus.com/UMN/whats-on-the-menu" target="_blank" rel="noopener noreferrer">
+            <h2>Check Dining Hall Menu</h2>
+        </a>
+    </section>
+
+    <!-- Rating for Today Section -->
+    <section id="rating-for-today">
+        <h2>Rating for Today</h2>
+        <h3>Dining Halls:</h3>
+        <ul>
+            <li>
+                <span id="avg-17th-ave">17th Ave: <span id="rating-17th-ave">N/A</span></span>
+                <a href="#" onclick="showComments('17th Ave')">See Comments</a>
+            </li>
+            <li>
+                <span id="avg-pioneer">Pioneer: <span id="rating-pioneer">N/A</span></span>
+                <a href="#" onclick="showComments('Pioneer')">See Comments</a>
+            </li>
+            <li>
+                <span id="avg-sanford">Sanford: <span id="rating-sanford">N/A</span></span>
+                <a href="#" onclick="showComments('Sanford')">See Comments</a>
+            </li>
+            <li>
+                <span id="avg-middlebrook">Middlebrook: <span id="rating-middlebrook">N/A</span></span>
+                <a href="#" onclick="showComments('Middlebrook')">See Comments</a>
+            </li>
+            <li>
+                <span id="avg-comstock">Comstock: <span id="rating-comstock">N/A</span></span>
+                <a href="#" onclick="showComments('Comstock')">See Comments</a>
+            </li>
+        </ul>
+        <div id="comments"></div>
+    </section>
+
+    <script>
+        document.getElementById('rating-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const diningHall = document.getElementById('diningHall').value;
+            const rating = document.getElementById('rating').value;
+            const comment = document.getElementById('comment').value;
+
+            const response = await fetch('http://localhost:3000/reviews', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ diningHall, rating, comment })
+            });
+
+            if (response.ok) {
+                alert('Review submitted!');
+                updateAverageRatings();
+            } else {
+                alert('Failed to submit review.');
+            }
+        });
+
+        async function updateAverageRatings() {
+            const diningHalls = ['17th Ave', 'Pioneer', 'Sanford', 'Middlebrook', 'Comstock'];
+            for (const hall of diningHalls) {
+                const response = await fetch(`http://localhost:3000/reviews/${hall}`);
+                const data = await response.json();
+                document.getElementById(`rating-${hall.toLowerCase().
+    
+
