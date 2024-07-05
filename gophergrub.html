@@ -5,91 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gopher Grub</title>
     <style>
-        /* Existing CSS styles */
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin: 0; /* Remove default margin */
-            background-color: #7a0019; /* University of Minnesota Maroon */
-            color: #ffd700; /* Gold text color */
+            margin: 0;
+            background-color: #7a0019;
+            color: #ffd700;
         }
 
         header, section {
-            width: 80%; /* Adjust the width as needed */
-            box-sizing: border-box; /* Include padding and border in the width */
-            border: 2px solid #ccc; /* Add a border around the content */
-            padding: 20px; /* Add padding for better spacing */
-            margin-bottom: 20px; /* Add margin at the bottom for separation */
-            background-color: transparent; /* Set background color to transparent */
-            perspective: 500px; /* Set the perspective value */
+            width: 80%;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: transparent;
+            perspective: 500px;
         }
 
         h1 {
-            font-size: 36px; /* Increase the font size for "Gopher Grub" */
+            font-size: 36px;
         }
 
         ul {
-            list-style-type: none; /* Remove bullet points */
+            list-style-type: none;
             padding: 0;
             margin: 0;
         }
 
-        /* Ensure "Check Dining Hall Menu" is on one line */
         nav a {
             white-space: nowrap;
         }
 
-        /* Increase font size for "Give Your Rating" and "Check Dining Hall Menu for Today" */
         #give-rating h2, #check-menu h2 {
             font-size: 24px;
         }
 
-        /* Increase font size for dining halls */
         #rating-for-today ul {
-            padding: 0; /* Reset padding */
-            margin: 0; /* Reset margin */
-            list-style-type: none; /* Remove bullet points */
+            padding: 0;
+            margin: 0;
+            list-style-type: none;
         }
 
-        /* Increase font size for dining hall links */
         #rating-for-today ul li a {
-            font-size: 20px; /* Adjust the font size as needed */
+            font-size: 20px;
         }
 
-        /* Add space between dining halls */
         #rating-for-today ul li {
-            margin-bottom: 10px; /* Adjust the margin as needed */
+            margin-bottom: 10px;
         }
 
-        /* Set hyperlink color to gold */
         a {
             color: #ffd700;
-            text-decoration: none; /* Remove underline */
-            transition: color 0.3s ease-in-out; /* Add a smooth transition effect for color change */
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
         }
 
-        /* Change color on hover */
         a:hover {
-            color: #c4820f; /* Change to a different color on hover */
+            color: #c4820f;
         }
 
-        /* Remove margin between sections */
         #give-rating, #check-menu {
             margin-bottom: 0;
         }
-
-        /* Add any additional styling as needed */
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <h1>Gopher Grub</h1>
     </header>
 
-    <!-- Give Your Rating Section -->
     <section id="give-rating">
         <h2>Give Your Rating</h2>
         <form id="rating-form">
@@ -112,14 +99,12 @@
         </form>
     </section>
 
-    <!-- Check Dining Hall Menu Section -->
     <section id="check-menu">
         <a href="https://dineoncampus.com/UMN/whats-on-the-menu" target="_blank" rel="noopener noreferrer">
             <h2>Check Dining Hall Menu</h2>
         </a>
     </section>
 
-    <!-- Rating for Today Section -->
     <section id="rating-for-today">
         <h2>Rating for Today</h2>
         <h3>Dining Halls:</h3>
@@ -177,6 +162,32 @@
             for (const hall of diningHalls) {
                 const response = await fetch(`http://localhost:3000/reviews/${hall}`);
                 const data = await response.json();
-                document.getElementById(`rating-${hall.toLowerCase().
+                const averageRating = data.averageRating.toFixed(2);
+                document.getElementById(`rating-${hall.toLowerCase().replace(' ', '-')}`).innerText = averageRating === 'NaN' ? 'N/A' : averageRating;
+            }
+        }
+
+        async function showComments(diningHall) {
+            const response = await fetch(`http://localhost:3000/reviews/${diningHall}`);
+            const data = await response.json();
+
+            const commentsContainer = document.getElementById('comments');
+            commentsContainer.innerHTML = `<h3>Comments for ${diningHall}</h3>`;
+
+            data.reviews.forEach(review => {
+                const commentElement = document.createElement('div');
+                commentElement.innerHTML = `
+                    <p><strong>Rating:</strong> ${review.rating}</p>
+                    <p><strong>Comment:</strong> ${review.comment}</p>
+                    <hr>
+                `;
+                commentsContainer.appendChild(commentElement);
+            });
+        }
+
+        updateAverageRatings();
+    </script>
+</body>
+</html>
     
 
