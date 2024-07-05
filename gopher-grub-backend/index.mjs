@@ -33,7 +33,7 @@ app.get('/reviews/:diningHall', async (req, res) => {
   await db.read();
   const reviews = db.data.reviews.filter(review => review.diningHall === diningHall);
 
-  const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+  const totalRating = reviews.reduce((acc, review) => acc + Number(review.rating), 0);
   const averageRating = reviews.length ? (totalRating / reviews.length) : 0;
 
   res.json({ averageRating, reviews });
@@ -42,11 +42,19 @@ app.get('/reviews/:diningHall', async (req, res) => {
 // Endpoint to post a new review
 app.post('/reviews', async (req, res) => {
   const { diningHall, rating, comment } = req.body;
-  const newReview = { diningHall, rating, comment: comment || '' };
+  const newReview = { diningHall, rating: Number(rating), comment: comment || '' };
   await db.read();
   db.data.reviews.push(newReview);
   await db.write();
   res.status(201).json(newReview);
+});
+
+// Endpoint to clear all reviews
+app.delete('/reviews', async (req, res) => {
+  await db.read();
+  db.data.reviews = [];
+  await db.write();
+  res.status(204).send();
 });
 
 app.listen(port, () => {
