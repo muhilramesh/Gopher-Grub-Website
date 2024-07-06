@@ -3,8 +3,9 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import pkg from 'lowdb'; // Import the whole lowdb package as a namespace
-const { Low, JSONFile } = pkg; // Destructure Low and JSONFile from the package
+
+// Use dynamic import for lowdb
+const { Low, JSONFile } = await import('lowdb');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
