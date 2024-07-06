@@ -1,9 +1,10 @@
 import express from 'express';
-import { Low, JSONFile } from 'lowdb';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import pkg from 'lowdb'; // Import the whole lowdb package as a namespace
+const { Low, JSONFile } = pkg; // Destructure Low and JSONFile from the package
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -60,6 +61,7 @@ app.delete('/reviews', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
 
 
 
