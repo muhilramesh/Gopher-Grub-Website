@@ -16,7 +16,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-const file = path.join('/private/tmp', 'db.json'); // Use the /private/tmp directory for the database file
+const file = path.join(__dirname, 'db.json'); // Use the project directory for the database file
 const adapter = new JSONFile(file);
 const defaultData = { reviews: [] }; // Define default data
 const db = new Low(adapter, defaultData); // Pass both adapter and default data
