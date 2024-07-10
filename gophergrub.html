@@ -138,10 +138,10 @@
             e.preventDefault();
 
             const diningHall = document.getElementById('diningHall').value;
-            const rating = document.getElementById('rating').value;
+            const rating = Number(document.getElementById('rating').value);
             const comment = document.getElementById('comment').value;
 
-            const response = await fetch('http://localhost:3000/reviews', {
+            const response = await fetch('https://infinite-ridge-26828-fac64c36bb20.herokuapp.com/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -151,6 +151,7 @@
 
             if (response.ok) {
                 alert('Review submitted!');
+                document.getElementById('rating-form').reset(); // Clear the input fields
                 updateAverageRatings();
             } else {
                 alert('Failed to submit review.');
@@ -160,7 +161,7 @@
         async function updateAverageRatings() {
             const diningHalls = ['17th Ave', 'Pioneer', 'Sanford', 'Middlebrook', 'Comstock'];
             for (const hall of diningHalls) {
-                const response = await fetch(`http://localhost:3000/reviews/${hall}`);
+                const response = await fetch(`https://infinite-ridge-26828-fac64c36bb20.herokuapp.com/reviews/${hall}`);
                 const data = await response.json();
                 const averageRating = data.averageRating.toFixed(2);
                 document.getElementById(`rating-${hall.toLowerCase().replace(' ', '-')}`).innerText = averageRating === 'NaN' ? 'N/A' : averageRating;
@@ -168,7 +169,7 @@
         }
 
         async function showComments(diningHall) {
-            const response = await fetch(`http://localhost:3000/reviews/${diningHall}`);
+            const response = await fetch(`https://infinite-ridge-26828-fac64c36bb20.herokuapp.com/reviews/${diningHall}`);
             const data = await response.json();
 
             const commentsContainer = document.getElementById('comments');
@@ -183,6 +184,20 @@
                 `;
                 commentsContainer.appendChild(commentElement);
             });
+        }
+
+        async function clearReviews() {
+            const response = await fetch('https://infinite-ridge-26828-fac64c36bb20.herokuapp.com/reviews', {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('All reviews cleared!');
+                updateAverageRatings();
+                document.getElementById('comments').innerHTML = '';
+            } else {
+                alert('Failed to clear reviews.');
+            }
         }
 
         updateAverageRatings();
