@@ -110,23 +110,23 @@
         <h3>Dining Halls:</h3>
         <ul>
             <li>
-                <span id="avg-17th-ave">17th Ave: <span id="rating-17th-ave">N/A</span></span>
+                <span id="avg-17th-ave">17th Ave: <span id="rating-17th-ave">N/A</span> (<span id="count-17th-ave">0</span> reviews)</span>
                 <a href="#" onclick="showComments('17th Ave')">See Comments</a>
             </li>
             <li>
-                <span id="avg-pioneer">Pioneer: <span id="rating-pioneer">N/A</span></span>
+                <span id="avg-pioneer">Pioneer: <span id="rating-pioneer">N/A</span> (<span id="count-pioneer">0</span> reviews)</span>
                 <a href="#" onclick="showComments('Pioneer')">See Comments</a>
             </li>
             <li>
-                <span id="avg-sanford">Sanford: <span id="rating-sanford">N/A</span></span>
+                <span id="avg-sanford">Sanford: <span id="rating-sanford">N/A</span> (<span id="count-sanford">0</span> reviews)</span>
                 <a href="#" onclick="showComments('Sanford')">See Comments</a>
             </li>
             <li>
-                <span id="avg-middlebrook">Middlebrook: <span id="rating-middlebrook">N/A</span></span>
+                <span id="avg-middlebrook">Middlebrook: <span id="rating-middlebrook">N/A</span> (<span id="count-middlebrook">0</span> reviews)</span>
                 <a href="#" onclick="showComments('Middlebrook')">See Comments</a>
             </li>
             <li>
-                <span id="avg-comstock">Comstock: <span id="rating-comstock">N/A</span></span>
+                <span id="avg-comstock">Comstock: <span id="rating-comstock">N/A</span> (<span id="count-comstock">0</span> reviews)</span>
                 <a href="#" onclick="showComments('Comstock')">See Comments</a>
             </li>
         </ul>
@@ -164,7 +164,9 @@
                 const response = await fetch(`https://infinite-ridge-26828-fac64c36bb20.herokuapp.com/reviews/${hall}`);
                 const data = await response.json();
                 const averageRating = data.averageRating.toFixed(2);
+                const reviewCount = data.reviews.length;
                 document.getElementById(`rating-${hall.toLowerCase().replace(' ', '-')}`).innerText = averageRating === 'NaN' ? 'N/A' : averageRating;
+                document.getElementById(`count-${hall.toLowerCase().replace(' ', '-')}`).innerText = reviewCount;
             }
         }
 
@@ -204,5 +206,6 @@
     </script>
 </body>
 </html>
+
     
 
