@@ -5,6 +5,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
+import cron from 'node-cron';
+import moment from 'moment-timezone';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -79,6 +81,19 @@ initializeDB().then(() => {
 }).catch(error => {
   console.error('Error initializing database:', error);
 });
+
+// Schedule task to clear reviews at 12:00 AM Central Time every day
+cron.schedule('0 0 * * *', async () => {
+  const now = moment().tz('America/Chicago');
+  if (now.hour() === 0 && now.minute() === 0) {
+    console.log('Clearing reviews at 12:00 AM Central Time');
+    await db.read();
+    db.data.reviews = [];
+    await db.write();
+    console.log('Reviews cleared successfully.');
+  }
+});
+
 
 
 
