@@ -3,9 +3,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-// Use dynamic import for lowdb
-const { Low, JSONFile } = await import('lowdb');
+import { Low } from 'lowdb';
+import { JSONFile } from 'lowdb/node';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,50 +16,68 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Set up LowDB
-const file = path.join('/tmp', 'db.json'); // Use the /tmp directory for the database file
+const file = path.join('/private/tmp', 'db.json'); // Use the /private/tmp directory for the database file
 const adapter = new JSONFile(file);
-const db = new Low(adapter);
+const defaultData = { reviews: [] }; // Define default data
+const db = new Low(adapter, defaultData); // Pass both adapter and default data
 
-// Initialize the database with default values if it's empty
-(async () => {
-  await db.read();
-  db.data ||= { reviews: [] };
-  await db.write();
-})();
+// Function to initialize the database with default values if it's empty
+async function initializeDB() {
+  try {
+    await db.read();
+    if (!db.data) {
+      console.log('No data found in DB, setting default values.');
+      db.data = defaultData; // Set default data if it doesn't exist
+      await db.write();
+      console.log('Default data set successfully.');
+    } else {
+      console.log('DB already initialized with data:', db.data);
+    }
+  } catch (error) {
+    console.error('Error initializing database:', error);
+  }
+}
 
-// Endpoint to get reviews for a specific dining hall
-app.get('/reviews/:diningHall', async (req, res) => {
-  const diningHall = req.params.diningHall;
-  await db.read();
-  const reviews = db.data.reviews.filter(review => review.diningHall === diningHall);
+// Initialize the database and then set up the routes
+initializeDB().then(() => {
+  console.log('Database initialized successfully.');
 
-  const totalRating = reviews.reduce((acc, review) => acc + Number(review.rating), 0);
-  const averageRating = reviews.length ? (totalRating / reviews.length) : 0;
+  // Endpoint to get reviews for a specific dining hall
+  app.get('/reviews/:diningHall', async (req, res) => {
+    const diningHall = req.params.diningHall;
+    await db.read();
+    const reviews = db.data.reviews.filter(review => review.diningHall === diningHall);
 
-  res.json({ averageRating, reviews });
-});
+    const totalRating = reviews.reduce((acc, review) => acc + Number(review.rating), 0);
+    const averageRating = reviews.length ? (totalRating / reviews.length) : 0;
 
-// Endpoint to post a new review
-app.post('/reviews', async (req, res) => {
-  const { diningHall, rating, comment } = req.body;
-  const newReview = { diningHall, rating: Number(rating), comment: comment || '' };
-  await db.read();
-  db.data.reviews.push(newReview);
-  await db.write();
-  res.status(201).json(newReview);
-});
+    res.json({ averageRating, reviews });
+  });
 
-// Endpoint to clear all reviews
-app.delete('/reviews', async (req, res) => {
-  await db.read();
-  db.data.reviews = [];
-  await db.write();
-  res.status(204).send();
-});
+  // Endpoint to post a new review
+  app.post('/reviews', async (req, res) => {
+    const { diningHall, rating, comment } = req.body;
+    const newReview = { diningHall, rating: Number(rating), comment: comment || '' };
+    await db.read();
+    db.data.reviews.push(newReview);
+    await db.write();
+    res.status(201).json(newReview);
+  });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  // Endpoint to clear all reviews
+  app.delete('/reviews', async (req, res) => {
+    await db.read();
+    db.data.reviews = [];
+    await db.write();
+    res.status(204).send();
+  });
+
+  // Start the server
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}).catch(error => {
+  console.error('Error initializing database:', error);
 });
 
 
