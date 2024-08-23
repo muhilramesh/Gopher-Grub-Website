@@ -1,0 +1,89 @@
+{
+  "reviews": [
+    {
+      "diningHall": "Sanford",
+      "rating": "1",
+      "comment": "wd"
+    },
+    {
+      "diningHall": "Sanford",
+      "rating": "4",
+      "comment": "wd"
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "4",
+      "comment": "tinning"
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "2",
+      "comment": "loser town"
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "2",
+      "comment": "h"
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "4",
+      "comment": "q"
+    },
+    {
+      "diningHall": "Pioneer",
+      "rating": "3",
+      "comment": "a"
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "3",
+      "comment": ""
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "4",
+      "comment": ""
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "4",
+      "comment": "asdf"
+    },
+    {
+      "diningHall": "Sanford",
+      "rating": "3",
+      "comment": "asdf"
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "4",
+      "comment": ""
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "3",
+      "comment": ""
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "3",
+      "comment": ""
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "2",
+      "comment": ""
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "2",
+      "comment": "asdf"
+    },
+    {
+      "diningHall": "17th Ave",
+      "rating": "5",
+      "comment": ""
+    }
+  ]
+}
