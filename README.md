@@ -18,4 +18,6 @@ umngg.com
 ## Group Credits
 ### Muhil Ramesh
 ### Raj Esakimuthu
+Deployment and Domain Management: Deployed the website via GitHub Pages, purchased and configured a custom domain through NameCheap, and set up DNS and HTTPS for secure access.
+
 ### Tejas Hegde
