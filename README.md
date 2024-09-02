@@ -1,3 +1,4 @@
+<img width="1510" alt="Screenshot 2024-09-01 at 11 15 06 PM" src="https://github.com/user-attachments/assets/f661079c-2ae2-4414-ad04-b10b9f87fe7c">
 # Gopher Grub by Muhil Ramesh, Raj Esakimuthu, Tejas Hegde
 
 # Table of Contents
